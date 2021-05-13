@@ -67,9 +67,9 @@ export default {
     },
     clear(event) {
       event.stopPropagation();
-      typeof this.expr === "number"
-        ? (this.expr = 0)
-        : (this.expr = this.expr.slice(0, -1));
+      this.expr = typeof this.expr === "number"
+        ? 0
+        : this.expr.slice(0, -1);
     },
     clearAll(event) {
       event.stopPropagation();
