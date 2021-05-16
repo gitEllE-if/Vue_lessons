@@ -1,0 +1,42 @@
+[
+  {
+    "date": "12.05.2021",
+    "category": "Clothing",
+    "price": 2020
+  },
+  {
+    "date": "11.05.2021",
+    "category": "Transport",
+    "price": 300
+  },
+  {
+    "date": "10.05.2021",
+    "category": "Food",
+    "price": 560
+  },
+  {
+    "date": "09.05.2021",
+    "category": "Clothing",
+    "price": 1800
+  },
+  {
+    "date": "08.05.2021",
+    "category": "Housing",
+    "price": 2350
+  },
+  {
+    "date": "07.05.2021",
+    "category": "Transport",
+    "price": 1500
+  },
+  {
+    "date": "06.05.2021",
+    "category": "Food",
+    "price": 780
+  },
+  {
+    "date": "05.05.2021",
+    "category": "Education",
+    "price": 9000
+  }
+]
