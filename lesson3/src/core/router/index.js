@@ -12,7 +12,15 @@ const routes = [
   {
     path: '/add/payment',
     name: 'AddCost',
-    component: () => import('@views/AddCost.vue')
+    component: () => import('@views/AddCost.vue'),
+    props: (route) => ({
+      item: {
+        category: route.params.category || '',
+        price: Number(route.query.value) || 0,
+        id: null,
+        date: null
+      }
+    })
   },
   {
     path: '/add/payment/:category',

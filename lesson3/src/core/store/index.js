@@ -24,6 +24,21 @@ export default new Vuex.Store({
             };
             state.paymentList.push(newItem);
         },
+        delPaymentItem(state, itemId) {
+            const newList = state.paymentList.filter(
+                (item) => item.id !== itemId
+            );
+            state.paymentList = newList;
+        },
+        editPaymentItem(state, newItem) {
+            newItem = {
+                ...newItem,
+                date: new Date(newItem.date).toLocaleDateString()
+            };
+            state.paymentList = state.paymentList.map(
+                (item) => item.id === newItem.id ? newItem : item
+            );
+        },
         setPage(state, newPage) {
             state.page = newPage;
         },

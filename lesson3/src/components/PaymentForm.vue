@@ -1,62 +1,57 @@
 <template>
-  <div :class="[$style.paymentForm]">
-    <button :class="[$style.addCostButton]" @click="showForm = !showForm">
-      ADD NEW COST +
-    </button>
-    <form :class="[$style.addCostForm]" v-show="showForm">
-      <label for="date">Date</label>
-      <input type="date" name="date" placeholder="Date" v-model="date" />
-      <label for="category"
-        >Category
+  <form :class="[$style.addCostForm]">
+    <label for="date">Date</label>
+    <input type="date" name="date" placeholder="Date" v-model="date" />
+    <label for="category"
+      >Category
+      <button
+        v-show="!showSubForm"
+        @click.prevent="showSubForm = !showSubForm"
+        :class="[$style.categoryBtn]"
+      >
+        <font-awesome-icon :icon="['fas', 'plus']" />
+      </button>
+      <form :class="[$style.addCategoryForm]" v-show="showSubForm">
+        <input
+          v-show="showSubForm"
+          name="newCategory"
+          placeholder="new category"
+          v-model.trim="newCategory"
+        />
+        <button @click.prevent="addCategory" :class="[$style.categoryBtn]">
+          <font-awesome-icon :icon="['fas', 'plus']" />
+        </button>
         <button
-          v-show="!showSubForm"
-          @click.prevent="showSubForm = !showSubForm"
+          @click.prevent="showSubForm = false"
           :class="[$style.categoryBtn]"
         >
-          +
+          <font-awesome-icon :icon="['fas', 'times']" />
         </button>
-        <form :class="[$style.addCategoryForm]" v-show="showSubForm">
-          <input
-            v-show="showSubForm"
-            name="newCategory"
-            placeholder="new category"
-            v-model.trim="newCategory"
-          />
-          <button @click.prevent="addCategory" :class="[$style.categoryBtn]">
-            +
-          </button>
-          <button
-            @click.prevent="showSubForm = false"
-            :class="[$style.categoryBtn]"
-          >
-            x
-          </button>
-        </form>
-      </label>
-      <select name="category" placeholder="Category" v-model="category">
-        <option
-          v-for="(category, index) in categories"
-          :key="index"
-          :value="category"
-        >
-          {{ category }}
-        </option>
-      </select>
-      <label for="price">Price</label>
-      <input name="price" v-model.number="price" />
-      <div v-if="message" :class="[$style.message]">{{ message }}</div>
-      <button
-        type="submit"
-        :class="[$style.addCostButton]"
-        @click.prevent="apply"
+      </form>
+    </label>
+    <select name="category" placeholder="Category" v-model="category">
+      <option
+        v-for="(category, index) in categories"
+        :key="index"
+        :value="category"
       >
-        APPLY
-      </button>
-      <button :class="[$style.addCostButton]" @click.prevent="cancel">
-        CANCEL
-      </button>
-    </form>
-  </div>
+        {{ category }}
+      </option>
+    </select>
+    <label for="price">Price</label>
+    <input type="number" name="price" v-model.number="price" />
+    <div v-if="message" :class="[$style.message]">{{ message }}</div>
+    <button
+      type="submit"
+      :class="[$style.addCostButton]"
+      @click.prevent="apply"
+    >
+      APPLY <font-awesome-icon :icon="['fas', 'check']" />
+    </button>
+    <button :class="[$style.addCostButton]" @click.prevent="cancel">
+      CANCEL <font-awesome-icon :icon="['fas', 'times']" />
+    </button>
+  </form>
 </template>
 
 <script>
@@ -64,8 +59,8 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      showForm: this.formVisibility,
       showSubForm: false,
+      id: "",
       date: "",
       category: "",
       price: 0,
@@ -74,24 +69,37 @@ export default {
     };
   },
   props: {
-    formVisibility: {
-      type: Boolean,
-      default: false
+    item: {
+      type: Object,
+      default: function() {
+        return {};
+      }
     }
   },
   mounted() {
-    this.date = new Date().toISOString().substring(0, 10);
-    this.category = this.$route.params.category || "";
-    this.price = Number(this.$route.query.value) || 0;
-    if (this.category && this.price && this.date) {
+    const { id, date, category, price } = this.item;
+    this.date = date
+      ? date
+          .split(".")
+          .reverse()
+          .join("-")
+      : new Date().toISOString().substring(0, 10);
+    this.category = category ? category : "";
+    this.price = +price ? +price : 0;
+    this.id = id ? id : "";
+    if (!this.id && this.category && !isNaN(this.price) && this.date) {
       this.apply();
     }
   },
   methods: {
     apply() {
-      const { date, category, price } = this;
+      const { id, date, category, price } = this;
       if (date && category && !isNaN(price)) {
-        this.setPaymentItem({ date, category, price });
+        if (id) {
+          this.editPaymentItem({ id, date, category, price: +price });
+        } else {
+          this.setPaymentItem({ date, category, price: +price });
+        }
         this.message = ":) successfully applied";
       } else {
         this.message = ":( enter correct data, please";
@@ -99,7 +107,7 @@ export default {
     },
     cancel() {
       this.message = "";
-      this.showForm = false;
+      this.$modalWindow.close();
     },
     addCategory() {
       const { newCategory } = this;
@@ -109,7 +117,7 @@ export default {
       this.showSubForm = false;
       this.message = "";
     },
-    ...mapMutations(["setPaymentItem", "setCategoriesItem"])
+    ...mapMutations(["setPaymentItem", "setCategoriesItem", "editPaymentItem"])
   },
   computed: {
     ...mapGetters({ categories: "getCategories" })
@@ -118,29 +126,7 @@ export default {
 </script>
 
 <style lang='scss' module>
-.paymentForm {
-  position: relative;
-}
-.addCostButton {
-  height: 30px;
-  width: 270px;
-  color: white;
-  font-weight: 700;
-  background-color: lightseagreen;
-  border: 1px solid lightseagreen;
-  cursor: pointer;
-  outline: none;
-  margin-top: 10px;
-  &:hover {
-    color: lightseagreen;
-    background-color: white;
-  }
-}
 .addCostForm {
-  position: absolute;
-  z-index: 0;
-  left: 450px;
-  top: -10px;
   width: 270px;
   height: 260px;
   padding: 20px;
@@ -158,6 +144,21 @@ export default {
     width: 100%;
     outline: none;
     margin-bottom: 10px;
+  }
+  .addCostButton {
+    height: 30px;
+    width: 270px;
+    color: white;
+    font-weight: 700;
+    background-color: lightseagreen;
+    border: 1px solid lightseagreen;
+    cursor: pointer;
+    outline: none;
+    margin-top: 10px;
+    &:hover {
+      color: lightseagreen;
+      background-color: white;
+    }
   }
 }
 .categoryBtn {

@@ -1,7 +1,6 @@
 <template>
   <main>
     <div>
-      <PaymentForm />
       <PaymentList />
       <Pagination />
     </div>
@@ -11,7 +10,6 @@
 
 <script>
 import PaymentList from "@components/PaymentList";
-import PaymentForm from "@components/PaymentForm";
 import Pagination from "@components/Pagination";
 import Diagram from "@components/Diagram";
 
@@ -19,7 +17,6 @@ export default {
   name: "Home",
   components: {
     PaymentList,
-    PaymentForm,
     Pagination,
     Diagram
   }

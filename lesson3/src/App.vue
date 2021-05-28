@@ -1,15 +1,23 @@
 <template>
   <div id="app">
-    <h1>My personal costs</h1>
+    <ModalWindow />
+    <ContextMenu />
+    <h1>My personal costs <font-awesome-icon :icon="['fas', 'coins']" /></h1>
     <router-view />
   </div>
 </template>
 
 <script>
+import ContextMenu from "@components/ContextMenu";
+import ModalWindow from "@components/ModalWindow";
 import { API } from "@/const";
 import { mapActions } from "vuex";
 export default {
   name: "App",
+  components: {
+    ContextMenu,
+    ModalWindow
+  },
   mounted() {
     this.loadPaymentList(`${API}paymentList.json`);
     this.loadCategories(`${API}categories.json`);
