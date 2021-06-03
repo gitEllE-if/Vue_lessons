@@ -5,6 +5,7 @@
     <label for="category"
       >Category
       <button
+        name="newCategoryBtn"
         v-show="!showSubForm"
         @click.prevent="showSubForm = !showSubForm"
         :class="[$style.categoryBtn]"
@@ -18,7 +19,11 @@
           placeholder="new category"
           v-model.trim="newCategory"
         />
-        <button @click.prevent="addCategory" :class="[$style.categoryBtn]">
+        <button
+          name="addCategoryBtn"
+          @click.prevent="addCategory"
+          :class="[$style.categoryBtn]"
+        >
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
         <button
