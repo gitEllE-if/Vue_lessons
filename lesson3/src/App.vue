@@ -6,11 +6,7 @@
         <PaymentForm @add="addNewCost" />
         <PaymentList
           :items="
-            paymentList.filter((item, idx) => {
-              return (
-                idx >= pageNbr * cntPerPage && idx < (pageNbr + 1) * cntPerPage
-              );
-            })
+            paymentList.slice(pageNbr * cntPerPage, (pageNbr + 1) * cntPerPage)
           "
         />
         <Pagination
