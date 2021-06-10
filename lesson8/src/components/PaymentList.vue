@@ -2,17 +2,13 @@
   <div>
     <v-dialog v-model="addCostDialog" max-width="500px">
       <template v-slot:activator="{ on }">
-        <v-btn
-          class="mb-8"
-          color="teal lighten-1"
-          outlined
-          tile="true"
-          v-on="on"
-        >
+        <v-btn class="mb-8" color="teal lighten-1" outlined tile v-on="on">
           ADD NEW COST <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </template>
-      <PaymentForm />
+      <v-card class="pa-4">
+        <PaymentForm />
+      </v-card>
     </v-dialog>
     <v-data-table :headers="tableHeaders" :items="items" :items-per-page="5">
     </v-data-table>

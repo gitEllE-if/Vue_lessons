@@ -1,81 +1,111 @@
 <template>
-  <form :class="[$style.addCostForm]">
-    <label for="date">Date</label>
-    <input type="date" name="date" placeholder="Date" v-model="date" />
-    <label for="category"
-      >Category
-      <button
-        name="newCategoryBtn"
-        v-show="!showSubForm"
-        @click.prevent="showSubForm = !showSubForm"
-        :class="[$style.categoryBtn]"
-      >
-        <font-awesome-icon :icon="['fas', 'plus']" />
-      </button>
-      <form :class="[$style.addCategoryForm]" v-show="showSubForm">
-        <input
-          v-show="showSubForm"
-          name="newCategory"
-          placeholder="new category"
-          v-model.trim="newCategory"
-        />
-        <button
-          name="addCategoryBtn"
-          @click.prevent="addCategory"
-          :class="[$style.categoryBtn]"
+  <validation-observer ref="observer" v-slot="{ invalid }">
+    <form @submit.prevent="submit">
+      <validation-provider v-slot="{ errors }" name="Date" rules="required">
+        <v-menu
+          v-model="menu"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+          :error-messages="errors"
         >
-          <font-awesome-icon :icon="['fas', 'plus']" />
-        </button>
-        <button
-          @click.prevent="showSubForm = false"
-          :class="[$style.categoryBtn]"
-        >
-          <font-awesome-icon :icon="['fas', 'times']" />
-        </button>
-      </form>
-    </label>
-    <select name="category" placeholder="Category" v-model="category">
-      <option
-        v-for="(category, index) in categories"
-        :key="index"
-        :value="category"
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="date"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" @input="menu = false"></v-date-picker>
+        </v-menu>
+      </validation-provider>
+      <validation-provider v-slot="{ errors }" name="select" rules="required">
+        <v-select
+          v-model="category"
+          prepend-icon="mdi-form-select"
+          append-icon="mdi-plus-circle-outline"
+          @click:append="showCategoryForm = true"
+          :items="categories"
+          :error-messages="errors"
+          label="Category"
+          data-vv-name="select"
+          required
+        ></v-select>
+        <v-dialog v-model="showCategoryForm" max-width="400px">
+          <v-card class="pa-4">
+            <CategoryForm />
+          </v-card>
+        </v-dialog>
+      </validation-provider>
+
+      <validation-provider
+        v-slot="{ errors }"
+        name="price"
+        rules="required|numeric"
       >
-        {{ category }}
-      </option>
-    </select>
-    <label for="price">Price</label>
-    <input type="number" name="price" v-model.number="price" />
-    <div v-if="message" :class="[$style.message]">{{ message }}</div>
-    <button
-      name="applyBtn"
-      type="submit"
-      :class="[$style.addCostButton]"
-      @click.prevent="apply"
-    >
-      APPLY <font-awesome-icon :icon="['fas', 'check']" />
-    </button>
-    <button
-      name="cancelBtn"
-      :class="[$style.addCostButton]"
-      @click.prevent="cancel"
-    >
-      CANCEL <font-awesome-icon :icon="['fas', 'times']" />
-    </button>
-  </form>
+        <v-text-field
+          v-model="price"
+          :error-messages="errors"
+          prepend-icon="mdi-cash-multiple"
+          label="Price"
+          required
+        ></v-text-field>
+      </validation-provider>
+      <v-btn class="mr-4" type="submit" :disabled="invalid" tile depressed>
+        submit
+      </v-btn>
+      <v-btn @click="clear" tile depressed> clear </v-btn>
+    </form>
+  </validation-observer>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import CategoryForm from "@components/CategoryForm";
+import { required, max, regex, numeric } from "vee-validate/dist/rules";
+import {
+  extend,
+  ValidationObserver,
+  ValidationProvider,
+  setInteractionMode
+} from "vee-validate";
+
+setInteractionMode("eager");
+extend("numeric", {
+  ...numeric,
+  message: "{_field_} must be numeric"
+});
+extend("required", {
+  ...required,
+  message: "{_field_} can not be empty"
+});
+extend("max", {
+  ...max,
+  message: "{_field_} may not be greater than {length} characters"
+});
+extend("regex", {
+  ...regex,
+  message: "{_field_} {_value_} does not match {regex}"
+});
 export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    CategoryForm
+  },
   data() {
     return {
-      showSubForm: false,
+      menu: false,
+      showCategoryForm: false,
       id: "",
-      date: "",
+      date: new Date().toISOString().substr(0, 10),
       category: "",
       price: 0,
-      message: "",
-      newCategory: ""
+      select: null
     };
   },
   props: {
@@ -110,87 +140,21 @@ export default {
         } else {
           this.setPaymentItem({ date, category, price: +price });
         }
-        this.message = ":) successfully applied";
-      } else {
-        this.message = ":( enter correct data, please";
       }
     },
-    cancel() {
-      this.message = "";
-      this.$modalWindow.close();
+    submit() {
+      this.$refs.observer.validate().then(() => this.apply());
     },
-    addCategory() {
-      const { newCategory } = this;
-      if (newCategory) {
-        this.setCategoriesItem(newCategory);
-      }
-      this.showSubForm = false;
-      this.message = "";
+    clear() {
+      this.price = "";
+      this.category = "";
+      this.select = null;
+      this.$refs.observer.reset();
     },
-    ...mapMutations(["setPaymentItem", "setCategoriesItem", "editPaymentItem"])
+    ...mapMutations(["setPaymentItem", "editPaymentItem"])
   },
   computed: {
     ...mapGetters({ categories: "getCategories" })
   }
 };
 </script>
-
-<style lang='scss' module>
-.addCostForm {
-  width: 270px;
-  height: 260px;
-  padding: 20px;
-  background-color: white;
-  border: 2px solid lightseagreen;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  input {
-    width: 99%;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  select {
-    width: 100%;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  .addCostButton {
-    height: 30px;
-    width: 270px;
-    color: white;
-    font-weight: 700;
-    background-color: lightseagreen;
-    border: 1px solid lightseagreen;
-    cursor: pointer;
-    outline: none;
-    margin-top: 10px;
-    &:hover {
-      color: lightseagreen;
-      background-color: white;
-    }
-  }
-}
-.categoryBtn {
-  height: 19px;
-  color: white;
-  font-weight: 700;
-  background-color: lightseagreen;
-  border: 1px solid lightseagreen;
-  cursor: pointer;
-  outline: none;
-  &:hover {
-    color: lightseagreen;
-    background-color: white;
-  }
-}
-.addCategoryForm {
-  display: flex;
-  input {
-    border: 1px solid lightseagreen;
-  }
-  button {
-    margin-left: 1px;
-  }
-}
-</style>

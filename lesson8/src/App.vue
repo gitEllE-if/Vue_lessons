@@ -29,25 +29,21 @@
     </v-navigation-drawer>
 
     <v-main app>
-      <ModalWindow />
-      <ContextMenu />
-
       <router-view />
     </v-main>
+    <v-footer padless fixed>
+      <v-col class="text-center teal--text" cols="12">
+        {{ new Date().getFullYear() }}
+      </v-col>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-import ContextMenu from "@components/ContextMenu";
-import ModalWindow from "@components/ModalWindow";
 import { API } from "@/const";
 import { mapActions } from "vuex";
 export default {
   name: "App",
-  components: {
-    ContextMenu,
-    ModalWindow
-  },
   data: () => ({
     drawer: false,
     group: null

@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="pa-4">
     <PaymentForm :item="item" />
-    <router-link to="/">Go to HOME</router-link>
+    <div class="mt-8">
+      <router-link to="/" class="teal--text">Go to HOME</router-link>
+    </div>
   </div>
 </template>
 
@@ -21,9 +23,3 @@ export default {
   }
 };
 </script>
-<style lang='scss' module>
-a {
-  display: block;
-  margin-top: 30px;
-}
-</style>
