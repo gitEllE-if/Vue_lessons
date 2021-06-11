@@ -3,21 +3,20 @@
     <v-col>
       <PaymentList />
     </v-col>
-    <v-col>
-      <Diagram />
+    <v-col class="ml-8">
+      <PaymentChart />
     </v-col>
   </v-row>
 </template>
 
 <script>
 import PaymentList from "@components/PaymentList";
-import Diagram from "@components/Diagram";
-
+import PaymentChart from "@components/PaymentChart";
 export default {
   name: "Home",
   components: {
     PaymentList,
-    Diagram
+    PaymentChart
   }
 };
 </script>
