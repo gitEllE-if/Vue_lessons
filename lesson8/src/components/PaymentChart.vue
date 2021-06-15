@@ -1,8 +1,8 @@
 <template>
   <div>
-    <Chart :chartdata="chartData" :options="chartOptions" />
-    <div class="mt-8 text-center">
-      Total:
+    <Chart :chartdata="chartData" :options="chartOptions" :height="380" />
+    <div class="mr-7 text-right">
+      total:
       <span class="teal--text"
         ><strong>{{ totalCost }}</strong></span
       >
@@ -19,7 +19,13 @@ export default {
   },
   data() {
     return {
-      chartOptions: { responsive: true, maintainAspectRatio: false }
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: "right"
+        }
+      }
     };
   },
   computed: {
@@ -29,8 +35,9 @@ export default {
       this.items.forEach(item => {
         if (!itemsData[item.category]) {
           itemsData[item.category] = Number(item.price);
+        } else {
+          itemsData[item.category] += Number(item.price);
         }
-        itemsData[item.category] += Number(item.price);
       });
       return {
         labels: Array.from(Object.keys(itemsData)),

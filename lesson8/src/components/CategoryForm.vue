@@ -10,6 +10,7 @@
           v-model="newCategory"
           :error-messages="errors"
           label="New category"
+          color="teal lighten-1"
           required
         ></v-text-field>
       </validation-provider>

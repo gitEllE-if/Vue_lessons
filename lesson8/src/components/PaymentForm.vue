@@ -11,16 +11,20 @@
           min-width="auto"
           :error-messages="errors"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on }">
             <v-text-field
               v-model="date"
               prepend-icon="mdi-calendar"
               readonly
-              v-bind="attrs"
               v-on="on"
+              color="teal lighten-1"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" @input="menu = false"></v-date-picker>
+          <v-date-picker
+            color="teal lighten-1"
+            v-model="date"
+            @input="menu = false"
+          ></v-date-picker>
         </v-menu>
       </validation-provider>
       <validation-provider v-slot="{ errors }" name="select" rules="required">
@@ -33,6 +37,7 @@
           :error-messages="errors"
           label="Category"
           data-vv-name="select"
+          color="teal lighten-1"
           required
         ></v-select>
         <v-dialog v-model="showCategoryForm" max-width="400px">
@@ -52,6 +57,7 @@
           :error-messages="errors"
           prepend-icon="mdi-cash-multiple"
           label="Price"
+          color="teal lighten-1"
           required
         ></v-text-field>
       </validation-provider>

@@ -3,7 +3,7 @@
     <v-col>
       <PaymentList />
     </v-col>
-    <v-col class="ml-8">
+    <v-col class="mt-8">
       <PaymentChart />
     </v-col>
   </v-row>

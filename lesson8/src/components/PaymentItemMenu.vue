@@ -1,21 +1,37 @@
 <template>
   <div>
-    <button :class="[$style.menuButton]" @click="onEdit(item)">
-      <font-awesome-icon :icon="['fas', 'pen']" />
-    </button>
-    <button :class="[$style.menuButton]" @click="onDelete(item.id)">
-      <font-awesome-icon :icon="['fas', 'trash-alt']" />
-    </button>
-    <button :class="[$style.menuButton]" @click="onClose">
-      <font-awesome-icon :icon="['fas', 'times']" />
-    </button>
+    <v-dialog v-model="addCostDialog" max-width="500px">
+      <template v-slot:activator="{ on }">
+        <v-btn tile depressed color="white teal--text" v-on="on" class="mr-2">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+      </template>
+      <v-card class="pa-4">
+        <PaymentForm :item="item" />
+      </v-card>
+    </v-dialog>
+    <v-btn
+      tile
+      depressed
+      color="white teal--text"
+      @click="delPaymentItem(item.id)"
+    >
+      <v-icon>mdi-delete</v-icon>
+    </v-btn>
   </div>
 </template>
 
 <script>
 import { mapMutations } from "vuex";
+import PaymentForm from "@components/PaymentForm";
 export default {
+  components: { PaymentForm },
   name: "PaymentItemMenu",
+  data() {
+    return {
+      addCostDialog: false
+    };
+  },
   props: {
     item: {
       type: Object,
@@ -25,37 +41,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["delPaymentItem"]),
-    onClose() {
-      this.$contextMenu.close();
-    },
-    onDelete(itemId) {
-      this.delPaymentItem(itemId);
-      this.onClose();
-    },
-    onEdit(item) {
-      this.$modalWindow.open("addCost_modal", item);
-      this.onClose();
-    }
-  },
-  computed: {}
+    ...mapMutations(["delPaymentItem"])
+  }
 };
 </script>
-
-<style lang='scss' module>
-.menuButton {
-  height: 30px;
-  width: 30px;
-  color: white;
-  font-weight: 700;
-  background-color: lightseagreen;
-  border: 1px solid white;
-  cursor: pointer;
-  outline: none;
-  &:hover {
-    color: lightseagreen;
-    background-color: white;
-    border: 1px solid lightseagreen;
-  }
-}
-</style>
