@@ -1,4 +1,8 @@
-# calculator
+# Cost accounting
+
+
+![screenshot](screenshot/cost.gif)
+
 
 ## Project setup
 ```
