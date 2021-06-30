@@ -1,7 +1,7 @@
 # Cost accounting
 
 
-![screenshot](screenshot/cost.gif)
+![screenshot](https://github.com/gitEllE-if/Vue_lessons/raw/lesson9/screenshot/cost.gif)
 
 
 ## Project setup
