@@ -5,6 +5,7 @@
     <label for="category"
       >Category
       <button
+        name="newCategoryBtn"
         v-show="!showSubForm"
         @click.prevent="showSubForm = !showSubForm"
         :class="[$style.categoryBtn]"
@@ -18,7 +19,11 @@
           placeholder="new category"
           v-model.trim="newCategory"
         />
-        <button @click.prevent="addCategory" :class="[$style.categoryBtn]">
+        <button
+          name="addCategoryBtn"
+          @click.prevent="addCategory"
+          :class="[$style.categoryBtn]"
+        >
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
         <button
@@ -42,13 +47,18 @@
     <input type="number" name="price" v-model.number="price" />
     <div v-if="message" :class="[$style.message]">{{ message }}</div>
     <button
+      name="applyBtn"
       type="submit"
       :class="[$style.addCostButton]"
       @click.prevent="apply"
     >
       APPLY <font-awesome-icon :icon="['fas', 'check']" />
     </button>
-    <button :class="[$style.addCostButton]" @click.prevent="cancel">
+    <button
+      name="cancelBtn"
+      :class="[$style.addCostButton]"
+      @click.prevent="cancel"
+    >
       CANCEL <font-awesome-icon :icon="['fas', 'times']" />
     </button>
   </form>
