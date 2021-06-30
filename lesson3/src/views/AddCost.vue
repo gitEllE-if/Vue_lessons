@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PaymentForm :formVisibility="true" />
+    <PaymentForm :item="item" />
     <router-link to="/">Go to HOME</router-link>
   </div>
 </template>
@@ -12,6 +12,12 @@ export default {
   name: "AddCost",
   components: {
     PaymentForm
+  },
+  props: {
+    item: {
+      type: Object,
+      default: null
+    }
   }
 };
 </script>

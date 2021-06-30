@@ -6,5 +6,6 @@ module.exports = {
     config.resolve.alias.set('@components', path.join(__dirname, 'src', 'components'));
     config.resolve.alias.set('@core', path.join(__dirname, 'src', 'core'));
     config.resolve.alias.set('@views', path.join(__dirname, 'src', 'views'));
+    config.resolve.alias.set('@plugins', path.join(__dirname, 'src', 'plugins'));
   }
 };
