@@ -3,8 +3,12 @@
     <button
       v-for="pageNbr in pageCnt"
       :key="pageNbr"
-      :class="[$style.pageBtn]"
-      @click="goToPage(pageNbr)"
+      :class="
+        pageNbr === curPage + 1
+          ? [$style.pageBtnCur, $style.pageBtn]
+          : [$style.pageBtn]
+      "
+      @click="setPage(pageNbr - 1)"
     >
       {{ pageNbr }}
     </button>
@@ -12,19 +16,16 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
+import { CNT_PER_PAGE } from "@/const";
 export default {
-  props: {
-    itemCnt: Number,
-    cntPerPage: Number
-  },
   methods: {
-    goToPage(pageNbr) {
-      this.$emit("page", pageNbr);
-    }
+    ...mapMutations(["setPage"])
   },
   computed: {
+    ...mapGetters({ itemCnt: "getItemCnt", curPage: "getPage" }),
     pageCnt() {
-      return Math.ceil(this.itemCnt / this.cntPerPage) || 5;
+      return Math.ceil(this.itemCnt / CNT_PER_PAGE);
     }
   }
 };
@@ -45,6 +46,9 @@ export default {
       color: lightseagreen;
       background-color: white;
     }
+  }
+  .pageBtnCur {
+    text-decoration: underline;
   }
 }
 </style>

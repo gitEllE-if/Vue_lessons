@@ -3,17 +3,9 @@
     <h1 class="header">My personal costs</h1>
     <main>
       <div>
-        <PaymentForm @add="addNewCost" />
-        <PaymentList
-          :items="
-            paymentList.slice(pageNbr * cntPerPage, (pageNbr + 1) * cntPerPage)
-          "
-        />
-        <Pagination
-          :itemCnt="paymentList.length"
-          :cntPerPage="cntPerPage"
-          @page="paginate"
-        />
+        <PaymentForm />
+        <PaymentList />
+        <Pagination />
       </div>
       <Diagram />
     </main>
@@ -26,8 +18,7 @@ import PaymentForm from "@components/PaymentForm";
 import Pagination from "@components/Pagination";
 import Diagram from "@components/Diagram";
 import { API } from "@/const";
-import { CNT_PER_PAGE } from "@/const";
-import { get } from "@core/requests";
+import { mapActions } from "vuex";
 
 export default {
   name: "App",
@@ -37,32 +28,12 @@ export default {
     Pagination,
     Diagram
   },
-  data() {
-    return {
-      paymentList: [],
-      cntPerPage: CNT_PER_PAGE,
-      pageNbr: 0
-    };
-  },
-  async mounted() {
-    try {
-      this.paymentList = await get(`${API}paymentList.json`);
-    } catch (err) {
-      console.log(`==> get "paymentList" failure ` + err);
-    }
+  mounted() {
+    this.loadPaymentList(`${API}paymentList.json`);
+    this.loadCategories(`${API}categories.json`);
   },
   methods: {
-    addNewCost(newCost) {
-      newCost = {
-        ...newCost,
-        date: new Date(newCost.date).toLocaleDateString(),
-        id: this.paymentList.length + 1
-      };
-      this.paymentList.push(newCost);
-    },
-    paginate(pageNbr) {
-      this.pageNbr = pageNbr - 1;
-    }
+    ...mapActions(["loadPaymentList", "loadCategories"])
   }
 };
 </script>

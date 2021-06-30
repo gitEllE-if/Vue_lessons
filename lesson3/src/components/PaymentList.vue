@@ -16,11 +16,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  props: {
-    items: Array
-  },
-  methods: {}
+  computed: {
+    ...mapGetters({ items: "getPaymentListPage" })
+  }
 };
 </script>
 

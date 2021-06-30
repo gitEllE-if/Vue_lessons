@@ -6,7 +6,33 @@
     <form :class="[$style.addCostForm]" v-show="showForm">
       <label for="date">Date</label>
       <input type="date" name="date" placeholder="Date" v-model="date" />
-      <label for="category">Category</label>
+      <label for="category"
+        >Category
+        <button
+          v-show="!showSubForm"
+          @click.prevent="showSubForm = !showSubForm"
+          :class="[$style.categoryBtn]"
+        >
+          +
+        </button>
+        <form :class="[$style.addCategoryForm]" v-show="showSubForm">
+          <input
+            v-show="showSubForm"
+            name="newCategory"
+            placeholder="new category"
+            v-model.trim="newCategory"
+          />
+          <button @click.prevent="addCategory" :class="[$style.categoryBtn]">
+            +
+          </button>
+          <button
+            @click.prevent="showSubForm = false"
+            :class="[$style.categoryBtn]"
+          >
+            x
+          </button>
+        </form>
+      </label>
       <select name="category" placeholder="Category" v-model="category">
         <option
           v-for="(category, index) in categories"
@@ -17,7 +43,7 @@
         </option>
       </select>
       <label for="price">Price</label>
-      <input name="price" placeholder="Price" v-model.number="price" />
+      <input name="price" v-model.number="price" />
       <div v-if="message" :class="[$style.message]">{{ message }}</div>
       <button
         type="submit"
@@ -34,25 +60,24 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
       showForm: false,
+      showSubForm: false,
       date: "",
       category: "",
       price: 0,
-      categories: ["Education", "Food", "Transport", "Clothing", "Housing"],
-      message: ""
+      message: "",
+      newCategory: ""
     };
-  },
-  props: {
-    items: Array
   },
   methods: {
     apply() {
       const { date, category, price } = this;
       if (date && category && !isNaN(price)) {
-        this.$emit("add", { date, category, price });
+        this.setPaymentItem({ date, category, price });
         this.message = ":) successfully applied";
       } else {
         this.message = ":( enter correct data, please";
@@ -61,7 +86,19 @@ export default {
     cancel() {
       this.message = "";
       this.showForm = false;
-    }
+    },
+    addCategory() {
+      const { newCategory } = this;
+      if (newCategory) {
+        this.setCategoriesItem(newCategory);
+      }
+      this.showSubForm = false;
+      this.message = "";
+    },
+    ...mapMutations(["setPaymentItem", "setCategoriesItem"])
+  },
+  computed: {
+    ...mapGetters({ categories: "getCategories" })
   }
 };
 </script>
@@ -87,9 +124,10 @@ export default {
 }
 .addCostForm {
   position: absolute;
-  left: 320px;
+  z-index: 0;
+  left: 450px;
   top: 110px;
-  width: 400px;
+  width: 270px;
   height: 260px;
   padding: 20px;
   background-color: white;
@@ -97,9 +135,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
   input {
-    width: 100%;
+    width: 99%;
     outline: none;
     margin-bottom: 10px;
   }
@@ -107,6 +144,28 @@ export default {
     width: 100%;
     outline: none;
     margin-bottom: 10px;
+  }
+}
+.categoryBtn {
+  height: 19px;
+  color: white;
+  font-weight: 700;
+  background-color: lightseagreen;
+  border: 1px solid lightseagreen;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    color: lightseagreen;
+    background-color: white;
+  }
+}
+.addCategoryForm {
+  display: flex;
+  input {
+    border: 1px solid lightseagreen;
+  }
+  button {
+    margin-left: 1px;
   }
 }
 </style>
