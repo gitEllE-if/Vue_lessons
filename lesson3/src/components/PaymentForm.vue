@@ -1,5 +1,5 @@
 <template>
-  <div :class="[$style.paymenForm]">
+  <div :class="[$style.paymentForm]">
     <button :class="[$style.addCostButton]" @click="showForm = !showForm">
       ADD NEW COST +
     </button>
@@ -64,7 +64,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      showForm: false,
+      showForm: this.formVisibility,
       showSubForm: false,
       date: "",
       category: "",
@@ -72,6 +72,20 @@ export default {
       message: "",
       newCategory: ""
     };
+  },
+  props: {
+    formVisibility: {
+      type: Boolean,
+      default: false
+    }
+  },
+  mounted() {
+    this.date = new Date().toISOString().substring(0, 10);
+    this.category = this.$route.params.category || "";
+    this.price = Number(this.$route.query.value) || 0;
+    if (this.category && this.price && this.date) {
+      this.apply();
+    }
   },
   methods: {
     apply() {
@@ -126,7 +140,7 @@ export default {
   position: absolute;
   z-index: 0;
   left: 450px;
-  top: 110px;
+  top: -10px;
   width: 270px;
   height: 260px;
   padding: 20px;
