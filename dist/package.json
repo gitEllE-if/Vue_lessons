@@ -1,9 +1,0 @@
-{
-    "name": "cost-accounting",
-    "version": "1.0.0",
-    "author": "elle",
-    "private": true,
-    "scripts": {
-        "postinstall": "npm install express"
-    }
-}
