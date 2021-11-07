@@ -1,6 +1,9 @@
 # Cost accounting
 
 
+[demo](https://costaccounting.herokuapp.com/)
+
+
 ## Project setup
 ```
 npm install
